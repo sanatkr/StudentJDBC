@@ -1,16 +1,24 @@
 package com.student.dao;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Repository;
 
 import com.student.entity.StudentEntity;
+import com.student.mapper.StudentMapper;
 
+@Repository
 public class StudentDaoImpl implements StudentDao{
 
 	//JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
 	
+	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
 	
@@ -54,8 +62,32 @@ public class StudentDaoImpl implements StudentDao{
 		jdbcTemplate.execute(query);
 		
 	}
+
+
+
+	@Override
+	public List<StudentEntity> viewAllStudent() {
+		
+		String selectSql = "SELECT * FROM STUDENT";
+		
+		List<StudentEntity> queryResult = jdbcTemplate.query(selectSql, new StudentMapper());
+		return queryResult;
+	}
+
+
+
+	public List<StudentEntity> viewAllStudentBeanPropertyRM() {
+		
+		//String selectSql = "SELECT * FROM STUDENT";
+		
+		System.out.println("\nBeanPropertyRowMapper class used for mapping --->\n");
+		
+		String selectSql = "SELECT ROLL_NO as rollNo, STUDENT_NAME as name, STUDENT_ADDRESS as address FROM STUDENT";
+		
+		List<StudentEntity> queryResult = jdbcTemplate.query(selectSql, new BeanPropertyRowMapper<StudentEntity>(StudentEntity.class));
+		return queryResult;
+	}
 	
-	
-	
+		
 
 }
