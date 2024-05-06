@@ -1,6 +1,7 @@
 package com.student.test;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -29,15 +30,22 @@ public class Test {
 //		
 //		studentDao.insert(student);
 		
+		System.out.println("\nViewing all students using RowMapper class :");
 		List<StudentEntity> allStudents = studentDao.viewAllStudent();
-		
 		studentHelper.viewAllStudents(allStudents);
 		
+		System.out.println("\nViewing all students using bean PropertyRowMapper class :-\n");
 		List<StudentEntity> allStudentBeanPropertyRM = studentDao.viewAllStudentBeanPropertyRM();
-		
 		studentHelper.viewAllStudents(allStudentBeanPropertyRM);
 		
+		System.out.println("\nViewing all students using ResultSetExtractor class :-\n");
+		List<StudentEntity> viewAllStdResultSetExtractor = studentDao.viewAllStdResultSetExtractor();
+		studentHelper.viewAllStudents(viewAllStdResultSetExtractor);
 		
+		
+		System.out.println("\nGrouping students by address using ResultSetExtractor class :-\n");
+		Map<String, List<String>> groupStudentsByAddress = studentDao.groupStudentsByAddress();
+		System.out.println(groupStudentsByAddress);
 		
 	
 		

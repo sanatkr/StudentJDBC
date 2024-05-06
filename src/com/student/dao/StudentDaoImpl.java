@@ -1,6 +1,7 @@
 package com.student.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import com.student.entity.StudentEntity;
 import com.student.mapper.StudentMapper;
+import com.student.resultsetextractor.GroupStudentResultSetExtractor;
+import com.student.resultsetextractor.StudentResultSetExtractor;
 
 @Repository
 public class StudentDaoImpl implements StudentDao{
@@ -74,8 +77,6 @@ public class StudentDaoImpl implements StudentDao{
 		return queryResult;
 	}
 
-
-
 	public List<StudentEntity> viewAllStudentBeanPropertyRM() {
 		
 		//String selectSql = "SELECT * FROM STUDENT";
@@ -86,6 +87,27 @@ public class StudentDaoImpl implements StudentDao{
 		
 		List<StudentEntity> queryResult = jdbcTemplate.query(selectSql, new BeanPropertyRowMapper<StudentEntity>(StudentEntity.class));
 		return queryResult;
+	}
+
+
+
+	@Override
+	public List<StudentEntity> viewAllStdResultSetExtractor() {
+		
+		String sql = "SELECT * FROM STUDENT";
+		
+		List<StudentEntity> queryResult = jdbcTemplate.query(sql, new StudentResultSetExtractor());
+		return queryResult;
+	}
+
+
+
+	@Override
+	public Map<String, List<String>> groupStudentsByAddress() {
+		
+		String sql = "Select * from student";
+		Map<String, List<String>> query = jdbcTemplate.query(sql,new GroupStudentResultSetExtractor());
+		return query;
 	}
 	
 		
