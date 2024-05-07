@@ -1,11 +1,16 @@
 package com.student.dao;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -108,6 +113,55 @@ public class StudentDaoImpl implements StudentDao{
 		String sql = "Select * from student";
 		Map<String, List<String>> query = jdbcTemplate.query(sql,new GroupStudentResultSetExtractor());
 		return query;
+	}
+
+
+
+	@Override
+	public int updateStudent(StudentEntity student) {
+		
+		String sql = "update student set Student_address=? where roll_no=?";
+		
+		int recordUpdated = this.jdbcTemplate.update(sql,student.getAddress(),student.getRollNo());
+		
+		return recordUpdated;
+	}
+
+
+
+	@Override
+	public int updateMultipleStudents(List<StudentEntity> studentList) {
+		
+		String sql = "update student set student_address=? where roll_no=?";
+		
+		int[] batchUpdate = this.jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int index) throws SQLException {
+				
+				ps.setString(1, studentList.get(index).getAddress());
+				ps.setInt(2, studentList.get(index).getRollNo());
+				
+				System.out.println("Insdie setValues() method ");
+				
+			}
+			
+			@Override
+			public int getBatchSize() {
+				
+				System.out.println("Insdie getBatchSize() method ");
+				return studentList.size();
+			}
+		});
+		int updatedRecords = 0;
+		for(int i=0;i<batchUpdate.length;i++)
+		{
+			if(batchUpdate[i]==1)
+			{
+				updatedRecords++;
+			}
+		}
+		return updatedRecords;
 	}
 	
 		

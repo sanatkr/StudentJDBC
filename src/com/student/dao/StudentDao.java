@@ -18,5 +18,8 @@ public interface StudentDao {
 	List<StudentEntity> viewAllStdResultSetExtractor();
 	
 	Map<String,List<String>> groupStudentsByAddress();
+	
+	int updateStudent(StudentEntity student);
 
+	int updateMultipleStudents(List<StudentEntity> studentList);
 }
